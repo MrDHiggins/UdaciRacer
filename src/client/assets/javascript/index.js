@@ -322,10 +322,28 @@ function defaultFetchOpts() {
 
 function getTracks() {
 	// GET request to `${SERVER}/api/tracks`
+	return new Promise(resolve => {
+		fetch(`${SERVER}/api/tracks`, {
+			method: 'GET',
+			...defaultFetchOpts(),
+		})
+		.then(res => res.json())
+		.then(tracks => resolve(tracks))
+		.catch(err => console.log("Problem with getTracks request: ", err))
+	})
 }
 
 function getRacers() {
 	// GET request to `${SERVER}/api/cars`
+	return new Promise(resolve => {
+		fetch(`${SERVER}/api/cars`, {
+			method: 'GET',
+			...defaultFetchOpts(),
+		})
+		.then(res => res.json())
+		.then(cars => resolve(cars))
+		.catch(err => console.log("Problem with getRacers request: ", err))
+	})
 }
 
 function createRace(player_id, track_id) {
