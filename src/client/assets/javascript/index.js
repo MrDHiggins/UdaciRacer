@@ -31,8 +31,18 @@ async function onPageLoad() {
 }
 
 function setupClickHandlers() {
-	document.addEventListener('click', async function(event) {
+	document.addEventListener('click', function(event) {
 		const { target } = event
+
+		let parentEl = event.target.parentElElement
+
+		if(parentEl.matches('.card.track')){
+			handleSelectTrack(parentEl);
+		}
+
+		if(parentEl.matches('.card.podracer')){
+			handleSelectPodRacer(parentEl);
+		}
 
 		// Race track form field
 		if (target.matches('.card.track')) {
@@ -49,12 +59,12 @@ function setupClickHandlers() {
 			event.preventDefault()
 	
 			// start race
-			await handleCreateRace()
+			handleCreateRace()
 		}
 
 		// Handle acceleration click
 		if (target.matches('#gas-peddle')) {
-			handleAccelerate()
+			handleAccelerate(target)
 		}
 
 	}, false)
