@@ -183,8 +183,10 @@ function handleSelectTrack(target) {
 }
 
 function handleAccelerate() {
-	console.log("accelerate button clicked")
-	// TODO - Invoke the API call to accelerate
+  accelerate(race_id)
+    .then(() => console.log("accelerate button clicked")
+    .catch(err => console.log("Problem with handleAccelerate request: ", err))
+    )
 }
 
 // HTML VIEWS ------------------------------------------------
