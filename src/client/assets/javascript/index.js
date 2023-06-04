@@ -180,9 +180,9 @@ function renderRacerCard(racer) {
   return `
     <li class="card podracer" id="${id}">
       <h3>${driver_name}</h3>
-      <p>${top_speed}</p>
-      <p>${acceleration}</p>
-      <p>${handling}</p>
+      <p>Top Speed: ${top_speed}</p>
+      <p>Acceleration: ${acceleration}</p>
+      <p>Handling: ${handling}</p>
     </li>
   `;
 }
@@ -259,23 +259,15 @@ function raceProgress(positions) {
   let count = 1;
 
   const results = positions.map(p => {
-    if (p.id == store.player_id) {
-      return `
-        <tr>
-          <td>
-            <h3>${count++} - ${p.driver_name}</h3>
-          </td>
-        </tr>
-      `;
-    } else {
-      return `
-        <tr>
-          <td>
-            <h3>${count++} - ${p.driver_name}</h3>
-          </td>
-        </tr>
-      `;
-    }
+    const driverName = marioBrotherNames[p.id - 1]; // Get the Mario brother name based on the racer's ID
+
+    return `
+      <tr>
+        <td>
+          <h3>${count++} - ${driverName}</h3>
+        </td>
+      </tr>
+    `;
   });
 
   return `
