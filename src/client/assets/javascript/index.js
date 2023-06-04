@@ -111,45 +111,41 @@ async function handleCreateRace() {
 	} 
 }
 
-function runRace(raceID) {
+async function runRace(raceID) {
+
 	return new Promise(resolve => {
-    const raceInterval = setInterval(async () => {
-      await getRace(raceID)
-        .then(res => {
-          if(res.status === "in-progress") {
-            renderAt('#leaderBoard', raceProgress(res.positions))
-          } else if(res.status === "finished") {
-            clearInterval(raceInterval);
-            renderAt('#race', resultsView(res.positions))
-            resolve(res)
-          }
-        })
-        .catch(err => console.log("Problem with runRace request: ", err))
-	}, 500)
-	
-	})
+		const racerInterval = setInterval(async ()=> {
+			const data = await getRace(raceID).catch((error) =>
+				console.log("getRace error ", error) 
+			);
+			if(data.status == 'in-progress') {
+				renderAt('#leaderBoard', raceProgress(data.positions))
+			} else if(data.status == 'finished') {
+				clearInterval(racerInterval) // to stop the interval from repeating
+				renderAt('#race', resultsView(data.positions)) 
+				resolve(data);
+			}
+			
+		},500)
+	}).catch(error => console.log(error))
 }
 
 async function runCountdown() {
 	try {
-		await delay(1000)
-		let timer = 3
+		await delay(1000);
+		let timer = 3;
 
 		return new Promise(resolve => {
-      const interval = setInterval(() => {
-
-        for(let i = 0; i < timer; timer--) {
-          document.getElementById('big-numbers').innerHTML = timer;
-
-          if(timer === 0) {
-            clearInterval(interval);
-            resolve();
-            return;
-          }
-        }
-			}, 1000) 
-		})
-	} catch(error) {
+			const interval = setInterval(() => {
+				document.getElementById('big-numbers').innerHTML = timer;
+				if (timer === 0) {
+					clearInterval(interval);
+					resolve();
+				}
+				timer--;
+			}, 1000);
+		});
+	} catch (error) {
 		console.log(error);
 	}
 }
@@ -388,13 +384,17 @@ async function createRace(player_id, track_id) {
 
 async function getRace(id) {
 	// GET request to `${SERVER}/api/races/${id}`
-		return await fetch(`${SERVER}/api/races/${id}`, {
-			method: 'GET',
-      dataType: 'jsonp',
+	const raceId = parseInt(id);
+	try {
+		const data = await fetch(`${SERVER}/api/races/${raceId}`, {
+			method: "GET",
+			dataType: "jsonp",
 			...defaultFetchOpts(),
-			})
-			.then(res => res.json())
-			.catch(err => console.log("Problem with getRace request: ", err))
+		});
+		return data.json();
+	} catch (error) {
+		console.log("Problem with getRace request::", error);
+	}
 }
 
 async function startRace(id) {
