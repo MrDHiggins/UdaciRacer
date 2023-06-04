@@ -289,15 +289,13 @@ function resultsView(positions) {
 		</main>
 	`
 }
-
 function raceProgress(positions) {
-	let userPlayer = positions.find(e => e.id === store.player_id)
-	userPlayer.driver_name += " (you)"
 
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1)
 	let count = 1
 
 	const results = positions.map(p => {
+    if(p.id == store.player_id){
 		return `
 			<tr>
 				<td>
@@ -305,13 +303,22 @@ function raceProgress(positions) {
 				</td>
 			</tr>
 		`
+    } else{
+      return `
+      <tr>
+        <td>
+          <h3>${count++} - ${p.driver_name}</h3>
+        </td>
+      </tr>
+    `
+    }
 	})
 
 	return `
 		<main>
 			<h3>Leaderboard</h3>
 			<section id="leaderBoard">
-				${results}
+				${results.join(' ')}
 			</section>
 		</main>
 	`
@@ -398,14 +405,19 @@ async function getRace(id) {
 }
 
 async function startRace(id) {
-	return await fetch(`${SERVER}/api/races/${id}/start`, {
-		method: 'POST',
-    dataType: 'jsonp',
-		...defaultFetchOpts(),
-	})
-	.then(res => res.json())
-	.catch(err => console.log("Problem with getRace request:", err))
+	const raceId = parseInt(id);
+	try {
+		const data = await fetch(`${SERVER}/api/races/${raceId}/start`, {
+			method: `POST`,
+			dataType: 'jsonp',
+			...defaultFetchOpts(),
+		});
+		return data;
+	} catch (err){
+		console.log("Problem with startRace request::", err);
+	}
 }
+
 
 async function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
