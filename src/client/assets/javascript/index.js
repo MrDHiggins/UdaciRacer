@@ -1,11 +1,11 @@
-// The store will hold all information needed globally
 let store = {
   track_id: undefined,
   player_id: undefined,
   race_id: undefined,
 };
 
-// We need our javascript to wait until the DOM is loaded
+const marioBrotherNames = ['Mario', 'Luigi', 'Princess Peach', 'Bowser', 'Yoshi'];
+
 document.addEventListener("DOMContentLoaded", async function () {
   try {
     await onPageLoad();
@@ -334,6 +334,18 @@ async function getRacers() {
       ...defaultFetchOpts(),
     })
     .then(res => res.json())
+    .then(racers => {
+      // Create a new array of modified racer objects
+      const renamedRacers = racers.slice(0, 5).map((racer, index) => {
+        const renamedRacer = { ...racer }; // Create a shallow copy of the racer object
+        if (index < 5) {
+          renamedRacer.driver_name = marioBrotherNames[index];
+        }
+        return renamedRacer;
+      });
+
+      return [...renamedRacers, ...racers.slice(5)]; // Combine the modified racers with the remaining original racers
+    })
     .catch(err => console.log("Problem with getRacers request: ", err));
 }
 
