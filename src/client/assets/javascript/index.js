@@ -123,23 +123,21 @@ function runRace(raceID) {
 
 async function runCountdown() {
 	try {
-		// wait for the DOM to load
 		await delay(1000)
 		let timer = 3
 
 		return new Promise(resolve => {
-			// TODO - 
-			//use Javascript's built in setInterval method to count down once per second
-			const interval = setInterval(() => {
-			// run this DOM manipulation to decrement the countdown for the user
-			document.getElementById('big-numbers').innerHTML = --timer
+      const interval = setInterval(() => {
 
-			// TODO - if the countdown is done, clear the interval, resolve the promise, and return
-			if(timer === 0) {
-				clearInterval(interval);
-				resolve();
-				return;
-			}
+        for(let i = 0; i < timer; timer--) {
+          document.getElementById('big-numbers').innerHTML = timer;
+
+          if(timer === 0) {
+            clearInterval(interval);
+            resolve();
+            return;
+          }
+        }
 			}, 1000) 
 		})
 	} catch(error) {
